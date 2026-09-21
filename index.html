@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WiFi Troubleshooter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- APP SPLASH SCREEN (only shows when installed as an app) -->
+<div id="splashScreen" style="display:none;position:fixed;inset:0;background:#0d0d0d;z-index:9999;align-items:center;justify-content:center;flex-direction:column;">
+  <div style="display:flex;align-items:flex-end;gap:5px;height:36px;margin-bottom:20px;">
+    <span style="display:block;width:8px;height:14px;background:#cc0000;border-radius:3px;"></span>
+    <span style="display:block;width:8px;height:22px;background:#cc0000;border-radius:3px;"></span>
+    <span style="display:block;width:8px;height:30px;background:#cc0000;border-radius:3px;"></span>
+    <span style="display:block;width:8px;height:36px;background:#cc0000;border-radius:3px;"></span>
+  </div>
+  <h1 style="font-family:'Space Grotesk',sans-serif;color:#ffffff;font-size:24px;margin-bottom:6px;">WiFi <span style="color:#cc0000;">Tools</span></h1>
+  <p style="color:#888888;font-size:13px;letter-spacing:1px;">Powered by SiteLink Solutions</p>
+</div>
+
+<!-- INACTIVE SCREEN -->
+<div id="inactiveScreen" style="display:none;min-height:100vh;background:#0d0d0d;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:40px;">
+  <div style="font-size:48px;margin-bottom:16px;">📶</div>
+  <h2 style="font-family:'Space Grotesk',sans-serif;color:#ffffff;font-size:22px;margin-bottom:10px;">Service Unavailable</h2>
+  <p style="color:#6b7280;font-size:14px;max-width:300px;line-height:1.6;">This WiFi Troubleshooter is currently unavailable. Please contact your WiFi provider for assistance.</p>
+</div>
+
+<div id="mainApp">
+  <header id="siteHeader">
+    <div class="signal-icon">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <h1 id="siteTitle">WiFi <span>Troubleshooter</span></h1>
+  </header>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('diagnose', this)">🔍 Diagnose</div>
+    <div class="tab" onclick="switchTab('speedtest', this)">🚀 Speed Test</div>
+    <div class="tab" onclick="switchTab('tips', this)">💡 WiFi Tips</div>
+  </div>
+
+  <main>
+
+    <!-- DIAGNOSE PANEL -->
+    <div class="panel active" id="panel-diagnose">
+      <div class="card">
+        <div class="card-title">📡 What is your problem?</div>
+        <div class="chips">
+          <div class="chip" onclick="fillChip(this, 'no internet')">No internet</div>
+          <div class="chip" onclick="fillChip(this, 'slow')">Slow speed</div>
+          <div class="chip" onclick="fillChip(this, 'disconnecting')">Keeps dropping</div>
+          <div class="chip" onclick="fillChip(this, 'cannot connect')">Can't connect</div>
+          <div class="chip" onclick="fillChip(this, 'weak signal')">Weak signal</div>
+        </div>
+        <textarea id="problem" placeholder="Describe your WiFi problem in more detail..."></textarea>
+        <button class="btn btn-primary" id="diagnoseBtn" onclick="diagnose()">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          Diagnose My Problem
+        </button>
+      </div>
+      <div class="result-box" id="resultBox">
+        <div class="result-header">
+          <div class="pulse"></div>
+          <span>Diagnosis</span>
+        </div>
+        <div class="result-body" id="resultText"></div>
+        <div class="contact-bar" id="contactBar">
+          <p>Still not fixed? Call support.</p>
+          <a class="call-btn" id="callBtn" href="tel:+10000000000">📞 Call Support</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPEED TEST PANEL -->
+    <div class="panel" id="panel-speedtest">
+      <div class="card">
+        <div class="card-title">🚀 Connection Speed Test</div>
+        <p style="font-size:13px;color:var(--gray);margin-bottom:14px;">Tests your download speed, upload speed and ping to see how your connection is performing.</p>
+        <div class="speed-grid">
+          <div class="speed-stat">
+            <div class="s-icon">⬇️</div>
+            <div class="s-val" id="dlVal">--</div>
+            <div class="s-unit">Mbps</div>
+            <div class="s-label">Download</div>
+          </div>
+          <div class="speed-stat">
+            <div class="s-icon">⬆️</div>
+            <div class="s-val" id="ulVal">--</div>
+            <div class="s-unit">Mbps</div>
+            <div class="s-label">Upload</div>
+          </div>
+          <div class="speed-stat">
+            <div class="s-icon">📡</div>
+            <div class="s-val" id="pingVal">--</div>
+            <div class="s-unit">ms</div>
+            <div class="s-label">Ping</div>
+          </div>
+        </div>
+        <div class="progress-track" id="progressTrack">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="speed-rating" id="speedRating"></div>
+        <button class="btn btn-dark" id="speedBtn" onclick="runSpeedTest()" style="margin-top:14px;">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+          Run Speed Test
+        </button>
+      </div>
+      <div class="card" style="background:#f8faff;">
+        <div class="card-title">📊 What do these numbers mean?</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="ref-row"><span>Browsing / Social media</span><span>1+ Mbps</span></div>
+          <div class="ref-row"><span>HD Video streaming</span><span>5+ Mbps</span></div>
+          <div class="ref-row"><span>4K Video / Gaming</span><span>25+ Mbps</span></div>
+          <div class="ref-row"><span>Good ping for gaming</span><span>&lt; 50ms</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIPS PANEL -->
+    <div class="panel" id="panel-tips">
+      <div class="card">
+        <div class="card-title">💡 Quick Tips to Improve Your WiFi</div>
+      </div>
+      <div class="tips-grid">
+        <div class="tip-item">
+          <div class="tip-num">1</div>
+          <div class="tip-content">
+            <h4>Restart your router regularly</h4>
+            <p>Unplug your router for 30 seconds and plug it back in. This clears memory and often fixes slow speeds and drops.</p>
+          </div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-num">2</div>
+          <div class="tip-content">
+            <h4>Position your router correctly</h4>
+            <p>Place your router in a central open location. Avoid thick walls between you and the router.</p>
+          </div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-num">3</div>
+          <div class="tip-content">
+            <h4>Use the right frequency band</h4>
+            <p>5GHz gives faster speeds but shorter range. 2.4GHz is slower but reaches further.</p>
+          </div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-num">4</div>
+          <div class="tip-content">
+            <h4>Disconnect unused devices</h4>
+            <p>Every connected device uses bandwidth. Disconnect devices you are not using to free up speed.</p>
+          </div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-num">5</div>
+          <div class="tip-content">
+            <h4>Keep your devices updated</h4>
+            <p>Outdated software and drivers can cause WiFi problems. Keep everything up to date.</p>
+          </div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-num">6</div>
+          <div class="tip-content">
+            <h4>Avoid interference</h4>
+            <p>Microwaves and cordless phones can interfere with WiFi. Keep your router away from these.</p>
+          </div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-num">7</div>
+          <div class="tip-content">
+            <h4>Use a WiFi extender for large spaces</h4>
+            <p>A WiFi extender or mesh network can eliminate dead zones and improve coverage throughout.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer id="siteFooter">
+    WiFi Troubleshooter &nbsp;·&nbsp; © 2026 Rudi Claassen. All Rights Reserved.
+  </footer>
+</div>
+
+<script src="firebase-config.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const app = initializeApp(FIREBASE_CONFIG);
+  const db  = getDatabase(app);
+
+  async function loadClient() {
+    const params   = new URLSearchParams(window.location.search);
+    const clientId = params.get('client');
+
+    if (!clientId) return;
+
+    try {
+      const snap = await get(ref(db, 'clients/' + clientId));
+      if (!snap.exists()) return;
+      const c = snap.val();
+
+      if (!c.active) {
+        document.getElementById('mainApp').style.display = 'none';
+        const screen = document.getElementById('inactiveScreen');
+        screen.style.display = 'flex';
+        return;
+      }
+
+      if (c.name) {
+        document.getElementById('siteTitle').innerHTML = c.name + ' <span>Troubleshooter</span>';
+        document.title = c.name + ' WiFi Troubleshooter';
+      }
+      if (c.primaryColor) {
+        document.documentElement.style.setProperty('--primary', c.primaryColor);
+        document.documentElement.style.setProperty('--primary-d', c.primaryColor);
+      }
+      if (c.headerColor) document.documentElement.style.setProperty('--navy', c.headerColor);
+      if (c.accentColor) document.documentElement.style.setProperty('--sky', c.accentColor);
+      if (c.phone) document.getElementById('callBtn').href = 'tel:' + c.phone;
+      if (c.footerText) document.getElementById('siteFooter').textContent = c.footerText;
+    } catch(e) { console.warn('Could not load client:', e); }
+  }
+
+  loadClient();
+</script>
+<script src="app.js"></script>
+
+<script>
+  // Only show splash screen / hide call button when running as the installed Median app.
+  // Median's official detection method: check the user agent for 'median'.
+  // (window.median can load asynchronously and isn't guaranteed to be ready yet at this point in the page.)
+  const isNativeApp = navigator.userAgent.toLowerCase().indexOf('median') > -1;
+
+  if (isNativeApp) {
+    const splash = document.getElementById('splashScreen');
+    splash.style.display = 'flex';
+    setTimeout(() => {
+      splash.style.transition = 'opacity 0.4s ease';
+      splash.style.opacity = '0';
+      setTimeout(() => { splash.style.display = 'none'; }, 400);
+    }, 1500);
+
+    // Hide the call button and contact bar in the installed app since phone numbers can't be dialed from it
+    const contactBar = document.getElementById('contactBar');
+    if (contactBar) contactBar.style.display = 'none';
+  }
+</script>
+
+</body>
+</html>

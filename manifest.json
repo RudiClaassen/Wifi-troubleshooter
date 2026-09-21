@@ -1,0 +1,42 @@
+{
+  "id": "/",
+  "name": "WiFi Tools",
+  "short_name": "WiFi Tools",
+  "description": "Instantly diagnose WiFi problems, test your speed, and get expert tips to fix your connection.",
+  "start_url": "https://wifi-troubleshooter.netlify.app/",
+  "scope": "https://wifi-troubleshooter.netlify.app/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d0d0d",
+  "theme_color": "#0d0d0d",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["utilities", "productivity"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "https://wifi-troubleshooter.netlify.app/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://wifi-troubleshooter.netlify.app/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://wifi-troubleshooter.netlify.app/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "https://wifi-troubleshooter.netlify.app/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
