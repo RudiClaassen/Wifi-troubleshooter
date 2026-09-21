@@ -3,6 +3,22 @@
 A white-label WiFi troubleshooting tool for ISPs. Guides customers through step-by-step diagnostics so they can fix common connection problems themselves, cutting support calls.
 
 **Live demo:** https://wifi-troubleshooter.netlify.app/
+![Screenshot 1](Screenshot_20260921-183327.png)
+
+
+
+
+![Screenshot 2](Screenshot_20260921-183335.png)
+
+
+
+
+![Screenshot 3](Screenshot_20260921-183340.png)
+
+
+
+
+![Screenshot 4](Screenshot_20260921-183347.png)
 
 ## Features
 - Step-by-step guided diagnostics for common WiFi and connection issues
